@@ -84,6 +84,18 @@ class FilmController extends Controller
         return response()->json($films);
     }
 
+    public function getFilmById($id)
+    {
+        // Ambil data film berdasarkan id
+        $film = Film::find($id);
+
+        // Validasi data film
+        if (!$film) {
+            return response()->json(['error' => 'Film not found'], 404);
+        }
+
+        // Kembalikan data film
+        return response()->json($film);
     public function searchFilmsByActor(Request $request, $start, $end) {
         // Ambil parameter actor dan filterData dari request
         $name = $request->input('name');

@@ -29,6 +29,8 @@ Route::get('actors/{actorId}/films', [ActorController::class, 'getActorActedIn']
 
 Route::get('trending', [TrendingController::class, 'getAllTrending']);
 
+Route::get('films_detail/{filmId}', [FilmController::class, 'getFilmById']);
+
 Route::get('auth/google', [SocialAuthController::class, 'googleRedirect']);
 Route::get('auth/callback/google', [SocialAuthController::class, 'handleProviderCallback']);
 
