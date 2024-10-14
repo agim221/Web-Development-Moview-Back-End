@@ -25,3 +25,5 @@ Route::get('actors', [ActorController::class, 'getAllActors']);
 Route::get('actors/{actorId}/films', [ActorController::class, 'getActorActedIn']);
 
 Route::get('trending', [TrendingController::class, 'getAllTrending']);
+
+Route::get('films_detail/{filmId}', [FilmController::class, 'getFilmById']);
