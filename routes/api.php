@@ -9,6 +9,8 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\TrendingController;
 use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\GenreController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -36,3 +38,7 @@ Route::get('auth/callback/google', [SocialAuthController::class, 'handleProvider
 
 Route::get('bookmarks/{token}', [BookmarkController::class, 'getFilmBookmark']);
 Route::get('bookmarks/{start}/{end}', [BookmarkController::class, 'getFilmBookmarkByRange']);
+
+Route::get('countries', [CountryController::class, 'getAllCountries']);
+
+Route::get('genres', [GenreController::class, 'getAllGenres']);
