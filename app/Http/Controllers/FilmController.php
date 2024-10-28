@@ -90,7 +90,6 @@ class FilmController extends Controller
         // Kembalikan data film
         return response()->json($film);
     }
-    
 
     public function searchFilmsByActor(Request $request, $start, $end)
     {

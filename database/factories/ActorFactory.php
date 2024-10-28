@@ -18,7 +18,7 @@ class ActorFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'image' => $this->faker->imageUrl(),
+            'photo_url' => $this->faker->imageUrl(),
         ];
     }
 }
