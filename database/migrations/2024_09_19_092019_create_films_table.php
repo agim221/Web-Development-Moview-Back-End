@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->text('description');
-            $table->foreignId('release_date')->nullable()->references('year')->on('years');
+
+            $table->foreignId('release_date')->nullable()->references('year')->on('years')->onDelete('set null');
             $table->float('rating');
             $table->foreignId('country_id')->nullable()->references('id')->on('countries')->onDelete('set null');
+
             $table->integer('status');
             $table->string('trailer');
             $table->string('availability');

@@ -7,6 +7,7 @@ use App\Models\Country;
 
 class CountryController extends Controller
 {
+
     // Create
     public function store(Request $request)
     {
@@ -47,5 +48,13 @@ class CountryController extends Controller
     
         $country->delete();
         return response()->json(null, 204);
-    }
+
+//     public function getAllCountries()
+//     {
+//         // Ambil semua data country
+//         $countries = Country::all();
+
+//         // Kembalikan hanya data country
+//         return response()->json($countries);
+//     }
 }

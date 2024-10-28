@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Film;
 use App\Models\Actor;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -52,28 +53,20 @@ class FilmController extends Controller
     
         // Tambahkan logika filter tambahan berdasarkan filterData jika tidak kosong
         if (!empty($filterData)) {
-            if (isset($filterData[1]) && !empty($filterData[1])) {
+            if (isset($filterData[0]) && !empty($filterData[0])) {
                 // $query->where('genre', $filterData[1]);
                 $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
                     ->join('genres', 'films_genres.genre_id', '=', 'genres.id')
-                    ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[1])]);
-            }
-
-            if (isset($filterData[4]) && !empty($filterData[4])) {
-                $query->join('countries', 'films.country_id', '=', 'countries.id')
-                    ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[4])]);
+                    ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[0])]);
             }
 
             if (isset($filterData[2]) && !empty($filterData[2])) {
-                $query->where('rating', intval($filterData[2]));
+                $query->join('countries', 'films.country_id', '=', 'countries.id')
+                    ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[2])]);
             }
 
-            if (isset($filterData[0]) && !empty($filterData[0])) {
-                $query->where('status', $filterData[0]);
-            }
-
-            if (isset($filterData[3]) && !empty($filterData[3])) {
-                $query->where('release_date', intval($filterData[3]));
+            if (isset($filterData[1]) && !empty($filterData[1])) {
+                $query->where('release_date', intval($filterData[1]));
             }
         }
     
@@ -97,58 +90,72 @@ class FilmController extends Controller
         // Kembalikan data film
         return response()->json($film);
     }
-    
-    public function searchFilmsByActor(Request $request, $start, $end) {
-        // Ambil parameter actor dan filterData dari request
-        $name = $request->input('name');
-        // $filterData = $request->input('filterData');
-    
-        // Validasi input
+
+    public function searchFilmsByActor(Request $request, $start, $end)
+    {
+    // Ambil parameter actor_name dan filterData dari request
+        $actorName = $request->input('name');
+        $filterData = $request->input('filterData');
+
+    // Validasi input
         if ($start < 0 || $end < $start) {
             return response()->json(['error' => 'Invalid range'], 400);
         }
 
-        // Ubah actor menjadi huruf kecil
-        $name = strtolower($name);
-    
-        // Buat query untuk mencari film berdasarkan name
-        $query = Actor::query();
-    
-        if ($name) {
-            $query->where('name', 'like', '%' . $name . '%')->with('acted_in');
+        // Buat query untuk mencari film berdasarkan actor_name
+        $query = Film::query();
+
+        if ($actorName) {
+            // Join tabel films, actor_film, dan actors
+            $query->join('actors_films', 'films.id', '=', 'actors_films.film_id')
+                ->join('actors', 'actors_films.actor_id', '=', 'actors.id')
+                ->where('actors.name', 'like', '%' . $actorName . '%');
         }
-    
+
         // Tambahkan logika filter tambahan berdasarkan filterData jika tidak kosong
-        // if (!empty($filterData)) {
-        //     if (isset($filterData[1]) && !empty($filterData[1])) {
-        //         // $query->where('genre', $filterData[1]);
-        //         $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
-        //             ->join('genres', 'films_genres.genre_id', '=', 'genres.id')
-        //             ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[1])]);
-        //     }
+        // Tambahkan logika filter tambahan berdasarkan filterData jika tidak kosong
+        if (!empty($filterData)) {
+            if (isset($filterData[0]) && !empty($filterData[0])) {
+                // $query->where('genre', $filterData[1]);
+                $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
+                    ->join('genres', 'films_genres.genre_id', '=', 'genres.id')
+                    ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[0])]);
+            }
 
-        //     if (isset($filterData[4]) && !empty($filterData[4])) {
-        //         $query->join('countries', 'films.country_id', '=', 'countries.id')
-        //             ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[4])]);
-        //     }
+            if (isset($filterData[2]) && !empty($filterData[2])) {
+                $query->join('countries', 'films.country_id', '=', 'countries.id')
+                    ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[2])]);
+            }
+            if (isset($filterData[1]) && !empty($filterData[1])) {
+                $query->where('release_date', intval($filterData[1]));
+            }
+        }
 
-        //     if (isset($filterData[2]) && !empty($filterData[2])) {
-        //         $query->where('rating', intval($filterData[2]));
-        //     }
-
-        //     if (isset($filterData[0]) && !empty($filterData[0])) {
-        //         $query->where('status', $filterData[0]);
-        //     }
-
-        //     if (isset($filterData[3]) && !empty($filterData[3])) {
-        //         $query->where('release_date', intval($filterData[3]));
-        //     }
-        // }
-    
         // Ambil data film dalam rentang tertentu
         $films = $query->skip($start - 1)->take($end - $start + 1)->get();
 
+        // Kembalikan data film
         return response()->json($films);
+    }
+
+    public function getFilmActors($filmId)
+    {
+        // Ambil data aktor yang bermain dalam film tertentu
+        $actors = Actor::join('actors_films', 'actors.id', '=', 'actors_films.actor_id')
+            ->where('actors_films.film_id', $filmId)
+            ->get();
+
+        // Kembalikan data aktor
+        return response()->json($actors);
+    }
+
+    public function getFilmComments($filmId)
+    {
+        // Ambil data komentar yang terkait dengan film tertentu
+        $comments = Comment::where('film_id', $filmId)->with('user')->get();
+
+        // Kembalikan data komentar
+        return response()->json($comments);
     }
 
     public function autoCompleteByTitle(Request $request) {

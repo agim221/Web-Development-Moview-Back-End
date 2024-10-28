@@ -15,17 +15,6 @@ class ActorController extends Controller
         // Kembalikan hanya data aktor
         return response()->json($actors);
     }
-
-    public function getActorActedIn($actorId)
-    {
-        $actorId = (int) $actorId;
-        // Cari aktor berdasarkan nilai actorId
-        $actor = Actor::where('id', $actorId)->first();
-
-        if (!$actor) {
-            return response()->json(['message' => 'Actor not found'], 404);
-        }
-
         // Ambil film yang diperankan oleh aktor tersebut
         $films = $actor->acted_in->map(function($actorFilm) {
             return $actorFilm->film;

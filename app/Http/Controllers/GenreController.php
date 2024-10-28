@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Genre;
 
@@ -41,5 +40,13 @@ class GenreController extends Controller
     
         $genre->delete();
         return response()->json(null, 204);
-    }
+
+//     public function getAllGenres()
+//     {
+//         // Ambil semua data genre
+//         $genres = Genre::all();
+
+//         // Kembalikan hanya data genre
+//         return response()->json($genres);
+//     }
 }
