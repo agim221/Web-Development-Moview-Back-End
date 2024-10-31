@@ -15,10 +15,21 @@ class ActorController extends Controller
         // Kembalikan hanya data aktor
         return response()->json($actors);
     }
+
+    public function getActorFilms($id)
+    {
+        // Ambil aktor berdasarkan ID
+        $actor = Actor::find($id);
+
+        if (!$actor) {
+            return response()->json(['message' => 'Actor not found'], 404);
+        }
+
         // Ambil film yang diperankan oleh aktor tersebut
         $films = $actor->acted_in->map(function($actorFilm) {
             return $actorFilm->film;
         });
+
         // Kembalikan hanya data film
         return response()->json($films);
     }
@@ -37,6 +48,11 @@ class ActorController extends Controller
     public function update(Request $request, $id)
     {
         $actor = Actor::find($id);
+
+        if (!$actor) {
+            return response()->json(['message' => 'Actor not found'], 404);
+        }
+
         $actor->name = $request->name;
         $actor->photo_url = $request->photo_url;
 
@@ -51,7 +67,7 @@ class ActorController extends Controller
         if (!$actor) {
             return response()->json(['message' => 'Actor not found'], 404);
         }
-    
+
         $actor->delete();
         return response()->json(null, 204);
     }

@@ -4,16 +4,15 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\FilmGenre;
+use App\Models\User;
 
-class FilmGenreSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Create 10 film genres with random data
-        FilmGenre::factory(100)->create();
+        User::factory(20)->create();
     }
 }

@@ -14,6 +14,6 @@ class ActorFilmSeeder extends Seeder
     public function run(): void
     {
         // Create 10 actors with random data
-        ActorFilm::factory(10)->create();
+        ActorFilm::factory(20)->create();
     }
 }
