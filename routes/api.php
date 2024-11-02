@@ -13,6 +13,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\AwardController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -61,9 +62,7 @@ Route::post('/awards', [AwardController::class, 'store']);
 Route::put('/awards/{id}', [AwardController::class, 'update']);
 Route::delete('/awards/{id}', [AwardController::class, 'destroy']);
 
-// Route::get('countries', [CountryController::class, 'getAllCountries']);
-
-// Route::get('genres', [GenreController::class, 'getAllGenres']);
+Route::get('/role', [UserController::class, 'getRole']);
 
 Route::post('add-comments', [CommentController::class, 'addComment']);
 

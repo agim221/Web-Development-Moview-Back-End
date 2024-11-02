@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Award;
+use App\Models\FilmAward;
 
 class FilmAwardSeeder extends Seeder
 {
@@ -14,6 +14,6 @@ class FilmAwardSeeder extends Seeder
     public function run(): void
     {
         // Create 10 awards with random data
-        Award::factory(10)->create();
+        FilmAward::factory(12)->create();
     }
 }

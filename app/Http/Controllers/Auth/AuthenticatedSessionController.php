@@ -12,18 +12,6 @@ use Illuminate\Support\Str;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Handle an incoming authentication request.
-     */
-    // public function store(LoginRequest $request)
-
-    // {
-    //     $request->authenticate();
-        
-    //     $request->session()->regenerate();
-        
-    //     return response()->json(['message' => 'Authenticated'], 200);
-    // }
     public function store(LoginRequest $request)
     {
         $request->authenticate();
@@ -33,9 +21,9 @@ class AuthenticatedSessionController extends Controller
         // Ambil pengguna yang sedang diautentikasi
         $user = Auth::user();
 
-
         return response()->json([
             'message' => 'Authenticated',
+            'role' => $user->role,
             'remember_token' => $user->remember_token,
         ], 200);
     }

@@ -49,4 +49,5 @@ class GenreController extends Controller
 //         // Kembalikan hanya data genre
 //         return response()->json($genres);
 //     }
+    }
 }
