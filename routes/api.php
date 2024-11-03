@@ -65,4 +65,5 @@ Route::delete('/awards/{id}', [AwardController::class, 'destroy']);
 Route::get('/role', [UserController::class, 'getRole']);
 
 Route::post('add-comments', [CommentController::class, 'addComment']);
-
+Route::get('/comments', [CommentController::class, 'index']);
+Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
