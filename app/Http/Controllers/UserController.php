@@ -60,4 +60,26 @@ class UserController extends Controller
         // Kembalikan data user
         return response()->json($user);
     }
+
+    public function getRole(Request $request)
+    {
+        // Ambil parameter email dari request
+        $remember_token = $request->input('remember_token');
+        
+        // Cari user berdasarkan remember_token
+        $user = User::where('remember_token', $remember_token)->first();
+
+        // Jika user tidak ditemukan
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Kembalikan data user
+        return response()->json($user->role);
+    }
+
+    public function index()
+    {
+        return User::all();
+    }
 }

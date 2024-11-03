@@ -19,8 +19,8 @@ class ActorFilmFactory extends Factory
     public function definition(): array
     {
         return [
-            'film_id' => Film::inRandomOrder()->first()->id,
-            'actor_id' => Actor::inRandomOrder()->first()->id,
+            'film_id' => $this->faker->numberBetween(1, 85),
+            'actor_id' => $this->faker->numberBetween(1, 20),
         ];
     }
 }

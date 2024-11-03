@@ -11,6 +11,9 @@ use App\Http\Controllers\TrendingController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\AwardController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -28,10 +31,16 @@ Route::get('years', [YearController::class, 'getAllYears']);
 
 Route::get('actors', [ActorController::class, 'getAllActors']);
 Route::get('actors/{actorId}/films', [ActorController::class, 'getActorActedIn']);
+Route::post('/actors', [ActorController::class, 'store']);
+Route::put('/actors/{id}', [ActorController::class, 'update']);
+Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
 
 Route::get('trending', [TrendingController::class, 'getAllTrending']);
 
 Route::get('films_detail/{filmId}', [FilmController::class, 'getFilmById']);
+Route::get('films_detail/{filmId}/actors', [FilmController::class, 'getFilmActors']);
+Route::get('films_detail/{filmId}/comments', [FilmController::class, 'getFilmComments']);
+Route::get('films_detail/{filmId}/genres', [FilmController::class, 'getFilmGenres']);
 
 Route::get('auth/google', [SocialAuthController::class, 'googleRedirect']);
 Route::get('auth/callback/google', [SocialAuthController::class, 'handleProviderCallback']);
@@ -39,6 +48,26 @@ Route::get('auth/callback/google', [SocialAuthController::class, 'handleProvider
 Route::get('bookmarks/{token}', [BookmarkController::class, 'getFilmBookmark']);
 Route::get('bookmarks/{start}/{end}', [BookmarkController::class, 'getFilmBookmarkByRange']);
 
-Route::get('countries', [CountryController::class, 'getAllCountries']);
+Route::get('/countries', [CountryController::class, 'index']);
+Route::post('/countries', [CountryController::class, 'store']);
+Route::put('/countries/{id}', [CountryController::class, 'update']);
+Route::delete('/countries/{id}', [CountryController::class, 'destroy']);
 
-Route::get('genres', [GenreController::class, 'getAllGenres']);
+Route::get('/genres', [GenreController::class, 'index']);
+Route::post('/genres', [GenreController::class, 'store']);
+Route::put('/genres/{id}', [GenreController::class, 'update']);
+Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
+
+
+Route::get('/awards', [AwardController::class, 'index']);
+Route::post('/awards', [AwardController::class, 'store']);
+Route::put('/awards/{id}', [AwardController::class, 'update']);
+Route::delete('/awards/{id}', [AwardController::class, 'destroy']);
+Route::get('/awards/film', [AwardController::class, 'getFilmByAward']);
+
+Route::get('/role', [UserController::class, 'getRole']);
+
+Route::post('add-comments', [CommentController::class, 'addComment']);
+
+Route::get('/users', [UserController::class, 'index']);
+

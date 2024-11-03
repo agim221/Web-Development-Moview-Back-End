@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUserController extends Controller
 {
@@ -30,9 +31,11 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'username' => $request->username,
             'email' => strtolower($request->email), // Mengubah email menjadi huruf kecil
-            'remember_token' => Str::uuid()->toString(),
+            'remember_token' => Str::uuid()->toString().Str::random(64),
             'password' => Hash::make($request->password),
         ]);
+
+        Log::info('User registered', ['user' => $user]);
 
         event(new Registered($user));
 
