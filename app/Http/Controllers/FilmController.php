@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Film;
 use App\Models\Actor;
 use App\Models\Comment;
+use App\Models\FilmGenre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -53,20 +54,34 @@ class FilmController extends Controller
     
         // Tambahkan logika filter tambahan berdasarkan filterData jika tidak kosong
         if (!empty($filterData)) {
-            if (isset($filterData[0]) && !empty($filterData[0])) {
-                // $query->where('genre', $filterData[1]);
-                $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
-                    ->join('genres', 'films_genres.genre_id', '=', 'genres.id')
-                    ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[0])]);
-            }
+            if (isset($filterData[4]) && !empty($filterData[4])) {
+                $query->join('films_awards', 'films.id', '=', 'films_awards.film_id')
+                    ->join('awards', 'films_awards.award_id', '=', 'awards.id')
+                    ->whereRaw('LOWER(awards.name) = ?', [strtolower($filterData[4])]);
+            } else {
+                if (isset($filterData[0]) && !empty($filterData[0])) {
+                    $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
+                        ->join('genres', 'films_genres.genre_id', '=', 'genres.id')
+                        ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[0])]);
+                }
+        
+                if (isset($filterData[2]) && !empty($filterData[2])) {
+                    $query->join('countries', 'films.country_id', '=', 'countries.id')
+                        ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[2])]);
+                }
+        
+                if (isset($filterData[1]) && !empty($filterData[1])) {
+                    $query->where('release_date', intval($filterData[1]));
+                }
 
-            if (isset($filterData[2]) && !empty($filterData[2])) {
-                $query->join('countries', 'films.country_id', '=', 'countries.id')
-                    ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[2])]);
-            }
-
-            if (isset($filterData[1]) && !empty($filterData[1])) {
-                $query->where('release_date', intval($filterData[1]));
+                // order asc or desc
+                if (isset($filterData[3]) && !empty($filterData[3])) {
+                    if ($filterData[3] == 'asc') {
+                        $query->orderBy('title', 'asc');
+                    } else {
+                        $query->orderBy('title', 'desc');
+                    }
+                }
             }
         }
     
@@ -113,24 +128,38 @@ class FilmController extends Controller
         }
 
         // Tambahkan logika filter tambahan berdasarkan filterData jika tidak kosong
-        // Tambahkan logika filter tambahan berdasarkan filterData jika tidak kosong
         if (!empty($filterData)) {
-            if (isset($filterData[0]) && !empty($filterData[0])) {
-                // $query->where('genre', $filterData[1]);
-                $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
+            if (isset($filterData[4]) && !empty($filterData[4])) {
+                $query->join('films_awards', 'films.id', '=', 'films_awards.film_id')
+                    ->join('awards', 'films_awards.award_id', '=', 'awards.id')
+                    ->whereRaw('LOWER(awards.name) = ?', [strtolower($filterData[4])]);
+            } else {
+
+                if (isset($filterData[0]) && !empty($filterData[0])) {
+                    // $query->where('genre', $filterData[1]);
+                    $query->join('films_genres', 'films.id', '=', 'films_genres.film_id')
                     ->join('genres', 'films_genres.genre_id', '=', 'genres.id')
                     ->whereRaw('LOWER(genres.name) = ?', [strtolower($filterData[0])]);
-            }
-
-            if (isset($filterData[2]) && !empty($filterData[2])) {
-                $query->join('countries', 'films.country_id', '=', 'countries.id')
+                }
+                
+                if (isset($filterData[2]) && !empty($filterData[2])) {
+                    $query->join('countries', 'films.country_id', '=', 'countries.id')
                     ->whereRaw('LOWER(countries.name) = ?', [strtolower($filterData[2])]);
-            }
-            if (isset($filterData[1]) && !empty($filterData[1])) {
-                $query->where('release_date', intval($filterData[1]));
+                }
+                if (isset($filterData[1]) && !empty($filterData[1])) {
+                    $query->where('release_date', intval($filterData[1]));
+                }
+
+                if (isset($filterData[3]) && !empty($filterData[3])) {
+                    if ($filterData[3] == 'asc') {
+                        $query->orderBy('title', 'asc');
+                    } else {
+                        $query->orderBy('title', 'desc');
+                    }
+                }
             }
         }
-
+            
         // Ambil data film dalam rentang tertentu
         $films = $query->skip($start - 1)->take($end - $start + 1)->get();
 
@@ -198,5 +227,16 @@ class FilmController extends Controller
         }
     
         return response()->json($result);
+    }
+
+    public function getFilmGenres($filmId)
+    {
+        $genre = FilmGenre::where('film_id', $filmId)->with('genre')->get();
+
+        if (!$genre) {
+            return response()->json(['message' => 'Genre not found'], 404);
+        }
+
+        return response()->json($genre);
     }
 }

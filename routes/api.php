@@ -40,6 +40,7 @@ Route::get('trending', [TrendingController::class, 'getAllTrending']);
 Route::get('films_detail/{filmId}', [FilmController::class, 'getFilmById']);
 Route::get('films_detail/{filmId}/actors', [FilmController::class, 'getFilmActors']);
 Route::get('films_detail/{filmId}/comments', [FilmController::class, 'getFilmComments']);
+Route::get('films_detail/{filmId}/genres', [FilmController::class, 'getFilmGenres']);
 
 Route::get('auth/google', [SocialAuthController::class, 'googleRedirect']);
 Route::get('auth/callback/google', [SocialAuthController::class, 'handleProviderCallback']);
@@ -57,12 +58,16 @@ Route::post('/genres', [GenreController::class, 'store']);
 Route::put('/genres/{id}', [GenreController::class, 'update']);
 Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
 
+
 Route::get('/awards', [AwardController::class, 'index']);
 Route::post('/awards', [AwardController::class, 'store']);
 Route::put('/awards/{id}', [AwardController::class, 'update']);
 Route::delete('/awards/{id}', [AwardController::class, 'destroy']);
+Route::get('/awards/film', [AwardController::class, 'getFilmByAward']);
 
 Route::get('/role', [UserController::class, 'getRole']);
 
 Route::post('add-comments', [CommentController::class, 'addComment']);
+
+Route::get('/users', [UserController::class, 'index']);
 

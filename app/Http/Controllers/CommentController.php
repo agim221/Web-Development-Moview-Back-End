@@ -10,39 +10,44 @@ use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
-    //
+
     public function addComment(Request $request)
     {
-        // Ambil parameter film_id, user_id, comment, dan rating dari request
-        $film_id = $request->input('film_id');
-        $remember_token = $request->input('remember_token');
-        $comment = $request->input('comment');
-        $rating = $request->input('rating');
-        Log::info($film_id);
-        Log::info($remember_token);
-        Log::info($comment);
-        Log::info($rating);
+        // Validasi input
+        $validatedData = $request->validate([
+            'film_id' => 'required|integer',
+            'remember_token' => 'required|string',
+            'comment' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        // Ambil parameter film_id, remember_token, comment, dan rating dari request
+        $film_id = $validatedData['film_id'];
+        $remember_token = $validatedData['remember_token'];
+        $commentText = $validatedData['comment'];
+        $rating = $validatedData['rating'];
 
         // Cari user_id berdasarkan remember_token
-        $user_id = User::where('remember_token', $remember_token)->first()->id;
-        Log::info($user_id);
+        $user = User::where('remember_token', $remember_token)->first();
 
-        // // validasi jika user sudah menambah komentar
-        // $comment = Comment::where('film_id', $film_id)->where('user_id', $user_id)->first();
-        // if ($comment) {
-        //     return response()->json(['error' => 'User already commented'], 400);
-        // }
+        // Validasi jika user tidak ditemukan
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
 
-        // Validasi input
-        if (empty($film_id) || empty($user_id) || empty($comment) || empty($rating)) {
-            return response()->json(['error' => 'Invalid input'], 400);
+        $user_id = $user->id;
+
+        // Validasi jika user sudah menambah komentar
+        $existingComment = Comment::where('film_id', $film_id)->where('user_id', $user_id)->first();
+        if ($existingComment) {
+            return response()->json(['error' => 'User already commented'], 400);
         }
 
         // Buat data komentar baru
         $newComment = new Comment();
         $newComment->film_id = $film_id;
         $newComment->user_id = $user_id;
-        $newComment->comment = $comment;
+        $newComment->comment = $commentText;
         $newComment->rating = $rating;
         $newComment->created_at = now();
         $newComment->updated_at = now();
