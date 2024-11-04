@@ -72,6 +72,8 @@ Route::get('/awards/film', [AwardController::class, 'getFilmByAward']);
 Route::get('/role', [UserController::class, 'getRole']);
 
 Route::post('add-comments', [CommentController::class, 'addComment']);
+Route::get('/comments', [CommentController::class, 'index']);
+Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 
 Route::get('/users', [UserController::class, 'index']);
 
