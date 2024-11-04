@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Bookmark;
 
 class BookmarkController extends Controller
 {
@@ -34,11 +35,16 @@ class BookmarkController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'remember_token' => 'required|exists:users,remember_token',
             'film_id' => 'required|exists:films,id',
         ]);
 
-        $bookmark = Bookmark::create($request->all());
+        $user = User::where('remember_token', $request->remember_token)->firstOrFail();
+        $bookmark = new Bookmark([
+            'user_id' => $user->id,
+            'film_id' => $request->film_id,
+        ]);
+        $bookmark->save();
 
         return response()->json($bookmark, 201);
     }
@@ -52,12 +58,16 @@ class BookmarkController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'remember_token' => 'required|exists:users,remember_token',
             'film_id' => 'required|exists:films,id',
         ]);
 
+        $user = User::where('remember_token', $request->remember_token)->firstOrFail();
         $bookmark = Bookmark::findOrFail($id);
-        $bookmark->update($request->all());
+        $bookmark->update([
+            'user_id' => $user->id,
+            'film_id' => $request->film_id,
+        ]);
 
         return response()->json($bookmark);
     }
@@ -69,4 +79,39 @@ class BookmarkController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function checkBookmark(Request $request)
+    {
+    $request->validate([
+        'remember_token' => 'required|exists:users,remember_token',
+        'film_id' => 'required|exists:films,id',
+    ]);
+
+    $user = User::where('remember_token', $request->remember_token)->firstOrFail();
+    $exists = Bookmark::where('user_id', $user->id)
+                      ->where('film_id', $request->film_id)
+                      ->exists();
+
+    return response()->json(['exists' => $exists]);
+    }
+
+    public function remove(Request $request)
+{
+    $request->validate([
+        'remember_token' => 'required|exists:users,remember_token',
+        'film_id' => 'required|exists:films,id',
+    ]);
+
+    $user = User::where('remember_token', $request->remember_token)->firstOrFail();
+    $bookmark = Bookmark::where('user_id', $user->id)
+                        ->where('film_id', $request->film_id)
+                        ->first();
+
+    if ($bookmark) {
+        $bookmark->delete();
+        return response()->json(['message' => 'Bookmark removed'], 200);
+    }
+
+    return response()->json(['error' => 'Bookmark not found'], 404);
+}
 }

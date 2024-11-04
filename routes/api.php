@@ -55,6 +55,8 @@ Route::post('bookmarks', [BookmarkController::class, 'store']);
 Route::get('bookmarks/{id}', [BookmarkController::class, 'show']);
 Route::put('bookmarks/{id}', [BookmarkController::class, 'update']);
 Route::delete('bookmarks/{id}', [BookmarkController::class, 'destroy']);
+Route::post('bookmarks/check', [BookmarkController::class, 'checkBookmark']);
+Route::post('bookmarks/remove', [BookmarkController::class, 'remove']);
 
 Route::get('/countries', [CountryController::class, 'index']);
 Route::post('/countries', [CountryController::class, 'store']);
