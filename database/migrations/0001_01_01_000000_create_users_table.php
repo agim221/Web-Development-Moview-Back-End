@@ -23,6 +23,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->string('role')->default('user');
+            $table->boolean('is_banned')->default(false);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

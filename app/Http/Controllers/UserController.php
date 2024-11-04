@@ -77,4 +77,9 @@ class UserController extends Controller
         // Kembalikan data user
         return response()->json($user->role);
     }
+
+    public function index()
+    {
+        return User::all();
+    }
 }
