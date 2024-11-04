@@ -35,12 +35,16 @@ Route::post('/actors', [ActorController::class, 'store']);
 Route::put('/actors/{id}', [ActorController::class, 'update']);
 Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
 
+Route::post('/add-actor', [ActorController::class, 'store']);
+Route::put('/actors/update/{id}', [ActorController::class, 'update']);
+
 Route::get('trending', [TrendingController::class, 'getAllTrending']);
 
 Route::get('films_detail/{filmId}', [FilmController::class, 'getFilmById']);
 Route::get('films_detail/{filmId}/actors', [FilmController::class, 'getFilmActors']);
 Route::get('films_detail/{filmId}/comments', [FilmController::class, 'getFilmComments']);
 Route::get('films_detail/{filmId}/genres', [FilmController::class, 'getFilmGenres']);
+Route::post('add-film', [FilmController::class, 'store']);
 
 Route::get('auth/google', [SocialAuthController::class, 'googleRedirect']);
 Route::get('auth/callback/google', [SocialAuthController::class, 'handleProviderCallback']);
