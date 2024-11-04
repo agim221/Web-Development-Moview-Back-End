@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Award;
+use Illuminate\Support\Facades\Log;
 
 class AwardController extends Controller
 {
@@ -38,5 +39,13 @@ class AwardController extends Controller
         }
         $award->delete();
         return response()->json(null, 204);
+    }
+
+    public function getFilmByAward(Request $request)
+    {
+        $award = $request->name;
+        $awardId = Award::where('name', $award)->first()->id;
+        $film = Award::find($awardId)->film->first()->film;
+        return response()->json($film);
     }
 }
