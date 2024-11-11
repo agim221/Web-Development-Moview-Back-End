@@ -54,29 +54,31 @@ class CommentController extends Controller
         // Simpan data komentar
         $newComment->save();
 
+        // Perbarui rating film
+        $film = Film::findOrFail($film_id);
+        $film->updateRating();
+
         // Kembalikan data komentar yang baru saja dibuat
         return response()->json($newComment);
     }
 
     public function index()
     {
-        {
-            // Mengambil semua data comments dengan join ke tabel users dan dramas
-            $comments = Comment::with(['user', 'films'])->get();
-    
-            // Memformat data yang akan dikirim ke frontend
-            $formattedComments = $comments->map(function ($comment) {
-                return [
-                    'id' => $comment->id,
-                    'username' => $comment->user ? $comment->user->username : 'Unknown',
-                    'film' => $comment->films ? $comment->films->title : 'Unknown',
-                    'rate' => $comment->rating,
-                    'comment' => $comment->comment,
-                ];
-            });
-    
-            return response()->json($formattedComments);
-        }
+        // Mengambil semua data comments dengan join ke tabel users dan films
+        $comments = Comment::with(['user', 'film'])->get();
+
+        // Memformat data yang akan dikirim ke frontend
+        $formattedComments = $comments->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'username' => $comment->user ? $comment->user->username : 'Unknown',
+                'film' => $comment->film ? $comment->film->title : 'Unknown',
+                'rate' => $comment->rating,
+                'comment' => $comment->comment,
+            ];
+        });
+
+        return response()->json($formattedComments);
     }
 
     public function destroy($id)
@@ -89,8 +91,16 @@ class CommentController extends Controller
             return response()->json(['message' => 'Comment not found'], 404);
         }
 
+        // Simpan referensi film sebelum menghapus komentar
+        $film = $comment->film;
+
         // Hapus data komentar
         $comment->delete();
+
+        // Perbarui rating film
+        if ($film) {
+            $film->updateRating();
+        }
 
         // Kembalikan response kosong dengan status code 204
         return response()->json(null, 204);
