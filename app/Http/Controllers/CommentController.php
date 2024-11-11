@@ -96,4 +96,11 @@ class CommentController extends Controller
         // Kembalikan response kosong dengan status code 204
         return response()->json(null, 204);
     }
+
+    public function searchComment(Request $request)
+    {
+        $query = $request->input('query');
+        $comments = Comment::where('comment', 'LIKE', "%{$query}%")->get();
+        return response()->json($comments);
+    }
 }

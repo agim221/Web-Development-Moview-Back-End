@@ -235,4 +235,11 @@ public function update(Request $request, $id)
     return response()->json($actor, 200);
 }
 
+public function searchActor(Request $request)
+    {
+        $query = $request->input('query');
+        $actors = Actor::where('name', 'LIKE', "%{$query}%")->get();
+        return response()->json($actors);
+    }
+
 }
