@@ -34,6 +34,7 @@ Route::get('actors/{actorId}/films', [ActorController::class, 'getActorActedIn']
 Route::post('/actors', [ActorController::class, 'store']);
 Route::put('/actors/{id}', [ActorController::class, 'update']);
 Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
+Route::get('/search/actors', [ActorController::class, 'searchActor']);
 
 Route::post('/add-actor', [ActorController::class, 'store']);
 Route::put('/actors/update/{id}', [ActorController::class, 'update']);
@@ -62,11 +63,13 @@ Route::get('/countries', [CountryController::class, 'index']);
 Route::post('/countries', [CountryController::class, 'store']);
 Route::put('/countries/{id}', [CountryController::class, 'update']);
 Route::delete('/countries/{id}', [CountryController::class, 'destroy']);
+Route::get('/search/countries', [CountryController::class, 'searchCountry']);
 
 Route::get('/genres', [GenreController::class, 'index']);
 Route::post('/genres', [GenreController::class, 'store']);
 Route::put('/genres/{id}', [GenreController::class, 'update']);
 Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
+Route::get('/search/genres', [GenreController::class, 'searchGenre']);
 
 
 Route::get('/awards', [AwardController::class, 'index']);
@@ -74,12 +77,14 @@ Route::post('/awards', [AwardController::class, 'store']);
 Route::put('/awards/{id}', [AwardController::class, 'update']);
 Route::delete('/awards/{id}', [AwardController::class, 'destroy']);
 Route::get('/awards/film', [AwardController::class, 'getFilmByAward']);
+Route::get('/search/awards', [AwardController::class, 'searchAward']);
 
 Route::get('/role', [UserController::class, 'getRole']);
 
 Route::post('add-comments', [CommentController::class, 'addComment']);
 Route::get('/comments', [CommentController::class, 'index']);
 Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+Route::get('/search/comments', [CommentController::class, 'searchComment']);
 
 Route::get('/users', [UserController::class, 'index']);
-
+Route::get('/search/users', [UserController::class, 'searchUser']);
