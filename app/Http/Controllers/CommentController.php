@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\User;
+use App\Models\Film;
 use Illuminate\Support\Facades\Log;
-
 
 class CommentController extends Controller
 {
-
     public function addComment(Request $request)
     {
         // Validasi input
@@ -57,5 +56,66 @@ class CommentController extends Controller
 
         // Kembalikan data komentar yang baru saja dibuat
         return response()->json($newComment);
+    }
+
+    public function getApprovedComments()
+    {
+        $comments = Comment::where('is_approved', true)->with('films', 'user')->get();
+
+        // Kembalikan data komentar
+        return response()->json($comments);
+    }
+
+    public function getUnapprovedComments()
+    {
+        $comments = Comment::where('is_approved', false)->with('films', 'user')->get();
+
+        // Kembalikan data komentar
+        return response()->json($comments);
+    }
+
+    public function index()
+    {
+        $comments = Comment::with('films', 'user')->get();
+
+        // Kembalikan data komentar
+        return response()->json($comments);
+    }
+
+    public function approveComment($id)
+    {
+        // Cari komentar berdasarkan id
+        $comment = Comment::find($id);
+
+        // Validasi jika komentar tidak ditemukan
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        // Set status komentar menjadi approved
+        $comment->is_approved = true;
+
+        // Simpan perubahan status komentar
+        $comment->save();
+
+        // Kembalikan data komentar yang sudah diapprove
+        return response()->json($comment);
+    }
+
+    public function destroy($id)
+    {
+        // Cari komentar berdasarkan id
+        $comment = Comment::find($id);
+
+        // Validasi jika komentar tidak ditemukan
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        // Hapus komentar
+        $comment->delete();
+
+        // Kembalikan response kosong
+        return response()->json(null, 204);
     }
 }

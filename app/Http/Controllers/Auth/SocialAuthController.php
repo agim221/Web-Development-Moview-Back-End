@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SocialAuthController extends Controller
@@ -21,27 +22,40 @@ class SocialAuthController extends Controller
      */
     public function handleProviderCallback()
     {
+        Log::info('masuk');
+        
         try {
-            $socialUser = Socialite::driver('google')->user();
+            $socialUser = Socialite::driver('google')->stateless()->setHttpClient(new \GuzzleHttp\Client(['verify' => false]))->user();
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unable to authenticate user.'], 500);
+            Log::error('Error during Google authentication: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Failed to authenticate with Google.');
         }
-
+    
+        // Convert the social user object to an array or JSON for logging
+        Log::info('Social User: ' . json_encode($socialUser));
+    
         // Find or create the user in the database
-        $existing = User::where('email', $socialUser->email)->first();
+        $existing = User::where('email', $socialUser->getEmail())->first();
         if ($existing) {
-            return response()->json(['token' => $existing->createToken('Personal Access Token')->accessToken], 200);
+            $existing->google_id = $socialUser->getId();
+            $existing->avatar = $socialUser->getAvatar();
+            $existing->save();
+            return redirect()->away('http://localhost:3000/auth/callback?remember_token=' . $existing->remember_token);
         } else {
             // create a new user
-            $newUser                  = new User;
-            $newUser->name            = $socialUser->name;
-            $newUser->email           = $socialUser->email;
-            $newUser->google_id       = $socialUser->id;
-            $newUser->avatar          = $socialUser->avatar;
-            $newUser->avatar_original = $socialUser->avatar_original;
+            $newUser = new User;
+             // Assuming username is the same as email without domain
+            $newUser->username = explode('@', $socialUser->getEmail())[0];
+            $newUser->email = $socialUser->getEmail();
+            $newUser->google_id = $socialUser->getId();
+            $newUser->avatar = $socialUser->getAvatar();
+            $newUser->email_verified_at = now();
+            $newUser->remember_token = Str::uuid()->toString().Str::random(64);
+            $newUser->role = 'user'; // Default role
+            $newUser->is_banned = false; // Default value
             $newUser->save();
+            return redirect()->away('http://localhost:3000/auth/callback?remember_token=' . $newUser->remember_token);
         }
 
-        return response()->json(['token' => $newUser->createToken('Personal Access Token')->accessToken], 200);
     }
 }
