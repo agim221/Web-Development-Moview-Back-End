@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('comment');
             $table->float('rating');
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
     }

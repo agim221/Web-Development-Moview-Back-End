@@ -21,6 +21,14 @@ class AuthenticatedSessionController extends Controller
         // Ambil pengguna yang sedang diautentikasi
         $user = Auth::user();
 
+        if ($user->is_banned) {
+            Auth::logout();
+
+            return response()->json([
+                'message' => 'User is banned',
+            ], 403);
+        }
+
         return response()->json([
             'message' => 'Authenticated',
             'role' => $user->role,

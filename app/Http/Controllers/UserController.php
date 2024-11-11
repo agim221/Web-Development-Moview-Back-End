@@ -91,4 +91,75 @@ class UserController extends Controller
                      ->get();
         return response()->json($users);
     }
+
+    public function blockUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->is_banned = true;
+        $user->save();
+
+        return response()->json($user);
+    }
+
+    public function unblockUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->is_banned = false;
+        $user->save();
+
+        return response()->json($user);
+    }
+
+    public function getDetailAccount(Request $request)
+    {
+        $remember_token = $request->input('remember_token');
+
+        $user = User::where('remember_token', $remember_token)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // return username and email
+        return response()->json($user->only(['username', 'email']));
+    }
+
+
+    /**
+     * Change password
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changePassword(Request $request)
+    {
+        $remember_token = $request->input('remember_token');
+        $current_password = $request->input('current_password');
+        $new_password = $request->input('new_password');
+
+        $user = User::where('remember_token', $remember_token)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        if (!password_verify($current_password, $user->password)) {
+            return response()->json(['message' => 'Invalid password'], 401);
+        }
+
+        $user->password = bcrypt($new_password);
+        $user->save();
+
+        return response()->json($user);
+    }
 }

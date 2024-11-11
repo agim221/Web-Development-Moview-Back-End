@@ -48,15 +48,15 @@ class CountryController extends Controller
     
         $country->delete();
         return response()->json(null, 204);
+    }
 
-//     public function getAllCountries()
-//     {
-//         // Ambil semua data country
-//         $countries = Country::all();
-
-//         // Kembalikan hanya data country
-//         return response()->json($countries);
-//     }
+    public function getCountryById($id)
+    {
+        $country = Country::find($id);
+        if (!$country) {
+            return response()->json(['message' => 'Country not found'], 404);
+        }
+        return response()->json($country);
     }
 
     public function searchCountry(Request $request)
