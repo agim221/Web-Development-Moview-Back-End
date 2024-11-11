@@ -21,6 +21,7 @@ return new class extends Migration
             $table->float('rating');
             $table->foreignId('country_id')->nullable()->references('id')->on('countries')->onDelete('set null');
 
+            $table->string('poster')->nullable();
             $table->integer('status');
             $table->string('trailer');
             $table->string('availability');
