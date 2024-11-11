@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\User;
+use App\Models\Film;
 use Illuminate\Support\Facades\Log;
-
 
 class CommentController extends Controller
 {
-
     public function addComment(Request $request)
     {
         // Validasi input
@@ -57,5 +56,50 @@ class CommentController extends Controller
 
         // Kembalikan data komentar yang baru saja dibuat
         return response()->json($newComment);
+    }
+
+    public function index()
+    {
+        {
+            // Mengambil semua data comments dengan join ke tabel users dan dramas
+            $comments = Comment::with(['user', 'films'])->get();
+    
+            // Memformat data yang akan dikirim ke frontend
+            $formattedComments = $comments->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'username' => $comment->user ? $comment->user->username : 'Unknown',
+                    'film' => $comment->films ? $comment->films->title : 'Unknown',
+                    'rate' => $comment->rating,
+                    'comment' => $comment->comment,
+                ];
+            });
+    
+            return response()->json($formattedComments);
+        }
+    }
+
+    public function destroy($id)
+    {
+        // Cari data komentar berdasarkan id
+        $comment = Comment::find($id);
+
+        // Jika data komentar tidak ditemukan
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        // Hapus data komentar
+        $comment->delete();
+
+        // Kembalikan response kosong dengan status code 204
+        return response()->json(null, 204);
+    }
+
+    public function searchComment(Request $request)
+    {
+        $query = $request->input('query');
+        $comments = Comment::where('comment', 'LIKE', "%{$query}%")->get();
+        return response()->json($comments);
     }
 }
