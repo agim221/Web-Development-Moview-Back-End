@@ -55,4 +55,11 @@ class Film extends Model
     public function actors(): HasMany {
         return $this->hasMany(ActorFilm::class, 'film_id', 'id');
     }
+
+    public function updateRating()
+    {
+        $averageRating = $this->comments()->avg('rating');
+        $this->rating = $averageRating;
+        $this->save();
+    }
 }
