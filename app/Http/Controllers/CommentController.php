@@ -58,64 +58,48 @@ class CommentController extends Controller
         return response()->json($newComment);
     }
 
-    public function getApprovedComments()
-    {
-        $comments = Comment::where('is_approved', true)->with('films', 'user')->get();
-
-        // Kembalikan data komentar
-        return response()->json($comments);
-    }
-
-    public function getUnapprovedComments()
-    {
-        $comments = Comment::where('is_approved', false)->with('films', 'user')->get();
-
-        // Kembalikan data komentar
-        return response()->json($comments);
-    }
-
     public function index()
     {
-        $comments = Comment::with('films', 'user')->get();
-
-        // Kembalikan data komentar
-        return response()->json($comments);
-    }
-
-    public function approveComment($id)
-    {
-        // Cari komentar berdasarkan id
-        $comment = Comment::find($id);
-
-        // Validasi jika komentar tidak ditemukan
-        if (!$comment) {
-            return response()->json(['message' => 'Comment not found'], 404);
+        {
+            // Mengambil semua data comments dengan join ke tabel users dan dramas
+            $comments = Comment::with(['user', 'films'])->get();
+    
+            // Memformat data yang akan dikirim ke frontend
+            $formattedComments = $comments->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'username' => $comment->user ? $comment->user->username : 'Unknown',
+                    'film' => $comment->films ? $comment->films->title : 'Unknown',
+                    'rate' => $comment->rating,
+                    'comment' => $comment->comment,
+                ];
+            });
+    
+            return response()->json($formattedComments);
         }
-
-        // Set status komentar menjadi approved
-        $comment->is_approved = true;
-
-        // Simpan perubahan status komentar
-        $comment->save();
-
-        // Kembalikan data komentar yang sudah diapprove
-        return response()->json($comment);
     }
 
     public function destroy($id)
     {
-        // Cari komentar berdasarkan id
+        // Cari data komentar berdasarkan id
         $comment = Comment::find($id);
 
-        // Validasi jika komentar tidak ditemukan
+        // Jika data komentar tidak ditemukan
         if (!$comment) {
             return response()->json(['message' => 'Comment not found'], 404);
         }
 
-        // Hapus komentar
+        // Hapus data komentar
         $comment->delete();
 
-        // Kembalikan response kosong
+        // Kembalikan response kosong dengan status code 204
         return response()->json(null, 204);
+    }
+
+    public function searchComment(Request $request)
+    {
+        $query = $request->input('query');
+        $comments = Comment::where('comment', 'LIKE', "%{$query}%")->get();
+        return response()->json($comments);
     }
 }

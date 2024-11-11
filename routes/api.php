@@ -36,6 +36,7 @@ Route::get('actors/{actorId}/films', [ActorController::class, 'getActorActedIn']
 Route::post('/actors', [ActorController::class, 'store']);
 Route::put('/actors/{id}', [ActorController::class, 'update']);
 Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
+Route::get('/search/actors', [ActorController::class, 'searchActor']);
 
 Route::post('/add-actor', [ActorController::class, 'store']);
 Route::put('/actors/update/{id}', [ActorController::class, 'update']);
@@ -53,17 +54,25 @@ Route::delete('films/{filmId}', [FilmController::class, 'destroy']);
 
 Route::get('bookmarks/{token}', [BookmarkController::class, 'getFilmBookmark']);
 Route::get('bookmarks/{start}/{end}', [BookmarkController::class, 'getFilmBookmarkByRange']);
+Route::post('bookmarks', [BookmarkController::class, 'store']);
+Route::get('bookmarks/{id}', [BookmarkController::class, 'show']);
+Route::put('bookmarks/{id}', [BookmarkController::class, 'update']);
+Route::delete('bookmarks/{id}', [BookmarkController::class, 'destroy']);
+Route::post('bookmarks/check', [BookmarkController::class, 'checkBookmark']);
+Route::post('bookmarks/remove', [BookmarkController::class, 'remove']);
 
 Route::get('/countries', [CountryController::class, 'index']);
 Route::get('/countries/{id}', [CountryController::class, 'getCountryById']);
 Route::post('/countries', [CountryController::class, 'store']);
 Route::put('/countries/{id}', [CountryController::class, 'update']);
 Route::delete('/countries/{id}', [CountryController::class, 'destroy']);
+Route::get('/search/countries', [CountryController::class, 'searchCountry']);
 
 Route::get('/genres', [GenreController::class, 'index']);
 Route::post('/genres', [GenreController::class, 'store']);
 Route::put('/genres/{id}', [GenreController::class, 'update']);
 Route::delete('/genres/{id}', [GenreController::class, 'destroy']);
+Route::get('/search/genres', [GenreController::class, 'searchGenre']);
 
 
 Route::get('/awards', [AwardController::class, 'index']);
@@ -71,12 +80,17 @@ Route::post('/awards', [AwardController::class, 'store']);
 Route::put('/awards/{id}', [AwardController::class, 'update']);
 Route::delete('/awards/{id}', [AwardController::class, 'destroy']);
 Route::get('/awards/film', [AwardController::class, 'getFilmByAward']);
+Route::get('/search/awards', [AwardController::class, 'searchAward']);
 
 Route::get('/role', [UserController::class, 'getRole']);
 
 Route::post('add-comments', [CommentController::class, 'addComment']);
+Route::get('/comments', [CommentController::class, 'index']);
+Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+Route::get('/search/comments', [CommentController::class, 'searchComment']);
 
 Route::get('/users', [UserController::class, 'index']);
+Route::get('/search/users', [UserController::class, 'searchUser']);
 Route::get('/users/block/{id}', [UserController::class, 'blockUser']);
 Route::get('/users/unblock/{id}', [UserController::class, 'unblockUser']);
 Route::get('/users/detail', [UserController::class, 'getDetailAccount']);

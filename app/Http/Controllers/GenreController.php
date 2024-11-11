@@ -41,4 +41,11 @@ class GenreController extends Controller
         $genre->delete();
         return response()->json(null, 204);
     }
+
+    public function searchGenre(Request $request)
+    {
+        $query = $request->input('query');
+        $genres = Genre::where('name', 'LIKE', "%{$query}%")->get();
+        return response()->json($genres);
+    }
 }

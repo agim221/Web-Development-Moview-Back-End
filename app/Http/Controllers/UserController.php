@@ -83,6 +83,15 @@ class UserController extends Controller
         return User::all();
     }
 
+    public function searchUser(Request $request)
+    {
+        $query = $request->input('query');
+        $users = User::where('username', 'LIKE', "%{$query}%")
+                     ->orWhere('email', 'LIKE', "%{$query}%")
+                     ->get();
+        return response()->json($users);
+    }
+
     public function blockUser($id)
     {
         $user = User::find($id);

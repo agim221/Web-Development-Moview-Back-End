@@ -48,4 +48,11 @@ class AwardController extends Controller
         $film = Award::find($awardId)->film->first()->film;
         return response()->json($film);
     }
+
+    public function searchAward(Request $request)
+    {
+        $query = $request->input('query');
+        $awards = Award::where('name', 'LIKE', "%{$query}%")->get();
+        return response()->json($awards);
+    }
 }

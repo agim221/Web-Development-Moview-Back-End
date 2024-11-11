@@ -58,4 +58,11 @@ class CountryController extends Controller
         }
         return response()->json($country);
     }
+
+    public function searchCountry(Request $request)
+    {
+        $query = $request->input('query');
+        $countries = Country::where('name', 'LIKE', "%{$query}%")->get();
+        return response()->json($countries);
+    }
 }
