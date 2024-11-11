@@ -64,15 +64,15 @@ class CommentController extends Controller
 
     public function index()
     {
-        // Mengambil semua data comments dengan join ke tabel users dan films
-        $comments = Comment::with(['user', 'film'])->get();
+        // Mengambil semua data comments dengan join ke tabel users dan dramas
+        $comments = Comment::with(['user', 'films'])->get();
 
         // Memformat data yang akan dikirim ke frontend
         $formattedComments = $comments->map(function ($comment) {
             return [
                 'id' => $comment->id,
                 'username' => $comment->user ? $comment->user->username : 'Unknown',
-                'film' => $comment->film ? $comment->film->title : 'Unknown',
+                'film' => $comment->films ? $comment->films->title : 'Unknown',
                 'rate' => $comment->rating,
                 'comment' => $comment->comment,
             ];
