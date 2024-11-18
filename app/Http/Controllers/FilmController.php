@@ -513,4 +513,11 @@ class FilmController extends Controller
     
         return response()->json(['message' => 'Film approved successfully!', 'film' => $film]);
     }
+
+    public function searchFilms(Request $request)
+    {
+        $query = $request->input('query');
+        $films = Film::where('title', 'LIKE', "%{$query}%")->get();
+        return response()->json($films);
+    }
 }

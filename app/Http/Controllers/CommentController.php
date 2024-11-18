@@ -67,18 +67,9 @@ class CommentController extends Controller
         // Mengambil semua data comments dengan join ke tabel users dan dramas
         $comments = Comment::with(['user', 'films'])->get();
 
-        // Memformat data yang akan dikirim ke frontend
-        $formattedComments = $comments->map(function ($comment) {
-            return [
-                'id' => $comment->id,
-                'username' => $comment->user ? $comment->user->username : 'Unknown',
-                'film' => $comment->films ? $comment->films->title : 'Unknown',
-                'rate' => $comment->rating,
-                'comment' => $comment->comment,
-            ];
-        });
 
-        return response()->json($formattedComments);
+
+        return response()->json($comments);
     }
 
     public function destroy($id)
@@ -111,5 +102,30 @@ class CommentController extends Controller
         $query = $request->input('query');
         $comments = Comment::where('comment', 'LIKE', "%{$query}%")->get();
         return response()->json($comments);
+    }
+
+    public function getUnapprovedComments()
+    {
+        $comments = Comment::where('is_approved', false)->with('user', 'films')->get();
+        return response()->json($comments);
+    }
+
+    public function getApprovedComments()
+    {
+        $comments = Comment::where('is_approved', true)->with('user', 'films')->get();  
+        return response()->json($comments);
+    }
+
+    public function approveComment($id)
+    {
+        $comment = Comment::find($id);
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        $comment->is_approved = true;
+        $comment->save();
+
+        return response()->json($comment);
     }
 }

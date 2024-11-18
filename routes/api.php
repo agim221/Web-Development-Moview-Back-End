@@ -102,3 +102,4 @@ Route::put('/comments/approve/{id}', [CommentController::class, 'approveComment'
 Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 Route::get('/comments', [CommentController::class, 'index']);
 
+Route::get('search/films', [FilmController::class, 'searchFilms']);

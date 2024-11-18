@@ -19,7 +19,7 @@ class BookmarkController extends Controller
         }
 
         // Ambil bookmark dari pengguna tersebut, batasi hingga 20
-        $bookmarks = $user->bookmarks()->with('film')->take(20)->get()->pluck('film');
+        $bookmarks = $user->bookmarks()->with('film')->take(10)->get()->pluck('film');
 
         // Kembalikan hasil dalam bentuk JSON
         return response()->json($bookmarks);
