@@ -1,0 +1,41 @@
+# Direktori dan file yang tidak perlu disertakan dalam image Docker
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Direktori vendor Composer (akan diinstal ulang di dalam container)
+vendor
+
+# Direktori penyimpanan Laravel (cache, logs, dll.)
+storage/*.key
+storage/*.log
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+
+# Direktori dan file lingkungan lokal
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Direktori IDE dan editor
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Direktori dan file sistem operasi
+.DS_Store
+Thumbs.db
+
+# Direktori dan file build
+build
+dist
+
+# Direktori dan file lainnya yang tidak perlu disertakan
+public/storage
+public/hot
