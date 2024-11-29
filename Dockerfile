@@ -10,8 +10,9 @@ RUN apt-get clean && apt-get update -y && apt-get install -y \
     git \
     libxml2-dev \
     libonig-dev \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql mbstring bcmath \
+    && docker-php-ext-install gd pdo pdo_pgsql mbstring bcmath \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer --version
 
@@ -24,8 +25,18 @@ COPY . .
 # Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+# Install faker untuk seeding
+RUN composer require fakerphp/faker
+
 # Pastikan direktori storage dan cache bisa ditulis
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Expose port untuk PHP-FPM
 EXPOSE 9000
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

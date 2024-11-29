@@ -23,7 +23,7 @@ class FilmFactory extends Factory
             'image' => $this->faker->imageUrl(), // Generate a random image URL
             'description' => $this->faker->paragraph(3), // Generate a random paragraph with 3 sentences
             'release_date' => Year::inRandomOrder()->first()->year, // Generate a random date
-            'rating' => $this->faker->randomFloat(1, 1, 10), // Generate a random float between 1 and 10 with 1 decimal
+            'rating' => $this->faker->randomFloat(1, 1, 5), // Generate a random float between 1 and 10 with 1 decimal
             'country_id' => Country::inRandomOrder()->first()->id, // Generate a random country name
             'status' => $this->faker->randomElement([0, 1]), // Generate a random integer between 0 and 1]),
             'trailer' => $this->faker->url(), // Generate a random URL

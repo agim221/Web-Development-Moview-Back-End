@@ -29,14 +29,14 @@ class DatabaseSeeder extends Seeder
         Country::factory(10)->create();
         Genre::factory(4)->create();
         Year::factory(10)->create();
-        Film::factory(60)->create();
+        Film::factory(100)->create();
         Actor::factory(10)->create();
         Award::factory(5)->create();
-        Comment::factory(10)->create();
         Trending::factory(5)->create();
         Bookmark::factory(10)->create();
         ActorFilm::factory(10)->create();
         FilmGenre::factory(10)->create();
         FilmAward::factory(10)->create();
+        Comment::factory(10)->create();
     }
 }

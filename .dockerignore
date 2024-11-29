@@ -16,7 +16,6 @@ storage/framework/views/*
 storage/logs/*
 
 # Direktori dan file lingkungan lokal
-.env
 .env.local
 .env.development
 .env.test

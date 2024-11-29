@@ -19,8 +19,8 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'film_id' => $this->faker->numberBetween(1, 85),
-            'user_id' => $this->faker->numberBetween(1, 20),
+            'film_id' => Film::inRandomOrder()->first()->id,
+            'user_id' => User::inRandomOrder()->first()->id,
             'comment' => $this->faker->sentence(10),
             'rating' => $this->faker->numberBetween(1, 5),
             'created_at' => $this->faker->dateTimeThisYear(),

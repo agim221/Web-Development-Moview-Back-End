@@ -19,8 +19,8 @@ class FilmAwardFactory extends Factory
     public function definition(): array
     {
         return [
-            'film_id' => $this->faker->numberBetween(1, 85),
-            'award_id' => $this->faker->numberBetween(1, 12),
+            'film_id' => Film::inRandomOrder()->first()->id,
+            'award_id' => Award::inRandomOrder()->first()->id,
         ];
     }
 }
