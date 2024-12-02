@@ -31,6 +31,16 @@ services:
         networks:
             - laravel-network
 
+    frontend:
+        image: react-app:latest
+        container_name: laravel-frontend
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./frontend:/var/www
+        networks:
+            - laravel-network
+
 networks:
     laravel-network:
         driver: bridge
