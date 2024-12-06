@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Tunggu hingga layanan database siap
-until nc -z -v -w30 db 5432
+# Tunggu hingga layanan database di Railway siap
+until nc -z -v -w30 postgres-ifxh.railway.internal 5432
 do
   echo "Menunggu database connection..."
   sleep 1
@@ -15,5 +15,7 @@ php artisan migrate --force
 php artisan db:seed --class=DatabaseSeeder --force
 php artisan passport:install
 
-# Jalankan PHP-FPM
-php-fpm
+# Jalankan PHP built-in server
+php artisan serve --host=0.0.0.0 --port=8000
+
+tail -f /dev/null

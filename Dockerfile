@@ -11,12 +11,18 @@ RUN apt-get clean && apt-get update -y && apt-get install -y \
     libxml2-dev \
     libonig-dev \
     libpq-dev \
+    netcat-openbsd \
+    python3 \
+    python3-pip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_pgsql mbstring bcmath \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer --version
 
-# Set working directory ke /var/www
+# Install Python packages
+RUN pip3 install pandas psycopg2
+
+# Set working directory ke /app
 WORKDIR /app
 
 # Copy file aplikasi Laravel ke dalam container

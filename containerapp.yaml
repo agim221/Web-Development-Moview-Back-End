@@ -1,0 +1,48 @@
+type: Microsoft.App/containerApps
+apiVersion: 2022-03-01
+location: australiaeast
+properties:
+  environmentId: /subscriptions/3b98962c-08eb-4e94-852a-a323c09821ea/resourceGroups/webdev/providers/Microsoft.App/managedEnvironments/managedEnvironment-webdev-b945
+  configuration:
+    ingress:
+      external: true
+      targetPort: 3000
+    dapr: null
+  template:
+    containers:
+      - name: laravel-app
+        image: agim221/moview:app
+        resources:
+          cpu: 1.0
+          memory: 2.0Gi
+        env:
+          - name: DB_HOST
+            value: laravel-db
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_DATABASE
+            value: moview_db
+          - name: DB_USERNAME
+            value: postgres
+          - name: DB_PASSWORD
+            value: secret
+      - name: laravel-db
+        image: agim221/moview:db
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: POSTGRES_DB
+            value: moview_db
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            value: secret
+      - name: laravel-frontend
+        image: agim221/moview:frontend
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: FRONTEND_ENV_VARIABLE
+            value: "some_value"

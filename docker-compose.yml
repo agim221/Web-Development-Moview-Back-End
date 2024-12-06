@@ -11,16 +11,17 @@ services:
         networks:
             - laravel-network
         environment:
-            - DB_HOST=db
+            - DB_HOST=postgres-ifxh.railway.internal
             - DB_PORT=5432
-            - DB_DATABASE=moview_db
+            - DB_DATABASE=railway
             - DB_USERNAME=postgres
-            - DB_PASSWORD=secret
+            - DB_PASSWORD=yVfaFYoGjHLzbJQgkdRYFwpUQqmizqhO
         depends_on:
-            - db
+            db:
+                condition: service_healthy
 
     db:
-        image: postgres:latest
+        image: agim221/webdev:db
         container_name: laravel-db
         environment:
             - POSTGRES_DB=moview_db
@@ -30,9 +31,14 @@ services:
             - postgres_data:/var/lib/postgresql/data
         networks:
             - laravel-network
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
     frontend:
-        image: react-app:latest
+        image: agim221/webdev:frontend
         container_name: laravel-frontend
         ports:
             - "3000:3000"

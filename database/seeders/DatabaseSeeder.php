@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         Award::factory(5)->create();
         Trending::factory(5)->create();
         Bookmark::factory(10)->create();
-        ActorFilm::factory(10)->create();
+        ActorFilm::factory(5)->create();
         FilmGenre::factory(10)->create();
         FilmAward::factory(10)->create();
         Comment::factory(10)->create();

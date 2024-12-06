@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Actor;
 use App\Models\Film;
+use App\Models\ActorFilm;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,9 +19,18 @@ class ActorFilmFactory extends Factory
      */
     public function definition(): array
     {
+        $filmId = Film::inRandomOrder()->first()->id;
+        $actorId = Actor::inRandomOrder()->first()->id;
+
+        // Ensure unique combination of film_id and actor_id
+        while (ActorFilm::where('film_id', $filmId)->where('actor_id', $actorId)->exists()) {
+            $filmId = Film::inRandomOrder()->first()->id;
+            $actorId = Actor::inRandomOrder()->first()->id;
+        }
+
         return [
-            'film_id' => Film::inRandomOrder()->first()->id,
-            'actor_id' => Actor::inRandomOrder()->first()->id,
+            'film_id' => $filmId,
+            'actor_id' => $actorId,
         ];
     }
 }
